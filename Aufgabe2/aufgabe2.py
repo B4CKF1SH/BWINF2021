@@ -16,9 +16,7 @@
 # 1360 2.8
 # 1411 3.3
 
-from ortools.algorithms import pywrapknapsack_solver
-
-with open("hotels5.txt") as f:
+with open("hotels1.txt") as f:
     lines = f.readlines()
 
 num_hotels = lines[0]
@@ -31,8 +29,6 @@ for hotel in hotels:
     hotel_tupil.append((int(dis), float(rat)))
 
 tolerance = 1800 - distance
-print(tolerance)
-print(hotel_tupil)
 
 
 def brute_force():
@@ -45,7 +41,7 @@ def brute_force():
             continue
         for b in range(a + 1, len(hotel_tupil)):
             b_dis, b_rat = hotel_tupil[b]
-            if b_rat < highest or   b_dis - a_dis < 360 - tolerance  or b_dis - a_dis > 360:  # Maximal 6h Zeit pro Tag
+            if b_rat < highest or b_dis - a_dis < 360 - tolerance or b_dis - a_dis > 360:  # Maximal 6h Zeit pro Tag
                 continue
             for c in range(b + 1, len(hotel_tupil)):
                 c_dis, c_rat = hotel_tupil[c]
@@ -62,8 +58,10 @@ def brute_force():
                         highest = min_rat
                         hotels = [a, b, c, d]
 
-    print(highest)
-    print(hotels)
+    print("Niedrigste Bewertung: " + str(highest))
+    print("Hotels:")
+    for h in hotels:
+        print(hotel_tupil[h])
 
 
 brute_force()
