@@ -18,7 +18,7 @@
 
 from ortools.algorithms import pywrapknapsack_solver
 
-with open("hotels1.txt") as f:
+with open("hotels5.txt") as f:
     lines = f.readlines()
 
 num_hotels = lines[0]
@@ -30,6 +30,8 @@ for hotel in hotels:
     dis, rat = hotel.strip().split()
     hotel_tupil.append((int(dis), float(rat)))
 
+tolerance = 1800 - distance
+print(tolerance)
 print(hotel_tupil)
 
 
@@ -39,30 +41,29 @@ def brute_force():
 
     for a in range(0, len(hotel_tupil)):
         a_dis, a_rat = hotel_tupil[a]
-        for b in range(a+1, len(hotel_tupil)):
+        if a_rat < highest or a_dis < 360 - tolerance or a_dis > 360:
+            continue
+        for b in range(a + 1, len(hotel_tupil)):
             b_dis, b_rat = hotel_tupil[b]
-            if b_dis - a_dis >= 360:  # Maximal 6h Zeit pro Tag
+            if b_rat < highest or   b_dis - a_dis < 360 - tolerance  or b_dis - a_dis > 360:  # Maximal 6h Zeit pro Tag
                 continue
-            for c in range(b+1, len(hotel_tupil)):
+            for c in range(b + 1, len(hotel_tupil)):
                 c_dis, c_rat = hotel_tupil[c]
-                if c_dis - b_dis >= 360:  # Maximal 6h Zeit pro Tag
+                if c_rat < highest or c_dis - b_dis < 360 - tolerance or c_dis - b_dis > 360:  # Maximal 6h Zeit pro Tag
                     continue
-                for d in range(c+1, len(hotel_tupil)):
+                for d in range(c + 1, len(hotel_tupil)):
                     d_dis, d_rat = hotel_tupil[d]
-                    if d_dis - c_dis >= 360:  # Maximal 6h Zeit pro Tag
+                    if d_rat < highest or d_dis - c_dis < 360 - tolerance or distance - d_dis > 360 or d_dis - c_dis > 360:  # Maximal 6h Zeit pro Tag
                         continue
-                    for e in range(d+1, len(hotel_tupil)):
-                        e_dis, e_rat = hotel_tupil[e]
-                        if e_dis - d_dis >= 360:  # Maximal 6h Zeit pro Tag
-                            continue
 
-                        # print([(a_dis, a_rat), (b_dis, b_rat), (c_dis, c_rat), (d_dis, d_rat), (e_dis, e_rat)])
-                        min_rat = min([a_rat, b_rat, c_rat, d_rat, e_rat])#
-                        if min_rat >= highest:
-                            highest = min_rat
-                            hotels = [a, b, c, d, e]
+                    # print([(a_dis, a_rat), (b_dis, b_rat), (c_dis, c_rat), (d_dis, d_rat)])
+                    min_rat = min([a_rat, b_rat, c_rat, d_rat])
+                    if min_rat >= highest:
+                        highest = min_rat
+                        hotels = [a, b, c, d]
 
     print(highest)
     print(hotels)
+
 
 brute_force()
