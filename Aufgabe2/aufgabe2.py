@@ -27,43 +27,42 @@ distance = int(lines[1])
 hotels = lines[2:len(lines)]
 hotel_tupil = []
 for hotel in hotels:
-    hotel_split = hotel.split()
-    hotel_tupil.append((hotel_split[0], hotel_split[1]))
+    dis, rat = hotel.strip().split()
+    hotel_tupil.append((int(dis), float(rat)))
 
 print(hotel_tupil)
 
-val = []
-wt = []
-for hotel in hotel_tupil:
-    val.append(float(hotel[0]))
-    wt.append(float(hotel[1]))
 
-print(val)
-print(wt)
+def brute_force():
+    highest = 0.0
+    hotels = []
 
-# Create the solver.
-solver = pywrapknapsack_solver.KnapsackSolver(
-    pywrapknapsack_solver.KnapsackSolver.
-    KNAPSACK_MULTIDIMENSION_BRANCH_AND_BOUND_SOLVER, 'KnapsackExample')
+    for a in range(0, len(hotel_tupil)):
+        a_dis, a_rat = hotel_tupil[a]
+        for b in range(a+1, len(hotel_tupil)):
+            b_dis, b_rat = hotel_tupil[b]
+            if b_dis - a_dis >= 360:  # Maximal 6h Zeit pro Tag
+                continue
+            for c in range(b+1, len(hotel_tupil)):
+                c_dis, c_rat = hotel_tupil[c]
+                if c_dis - b_dis >= 360:  # Maximal 6h Zeit pro Tag
+                    continue
+                for d in range(c+1, len(hotel_tupil)):
+                    d_dis, d_rat = hotel_tupil[d]
+                    if d_dis - c_dis >= 360:  # Maximal 6h Zeit pro Tag
+                        continue
+                    for e in range(d+1, len(hotel_tupil)):
+                        e_dis, e_rat = hotel_tupil[e]
+                        if e_dis - d_dis >= 360:  # Maximal 6h Zeit pro Tag
+                            continue
 
-values = val
-weights = [wt]
-capacities = [distance]
+                        # print([(a_dis, a_rat), (b_dis, b_rat), (c_dis, c_rat), (d_dis, d_rat), (e_dis, e_rat)])
+                        min_rat = min([a_rat, b_rat, c_rat, d_rat, e_rat])#
+                        if min_rat >= highest:
+                            highest = min_rat
+                            hotels = [a, b, c, d, e]
 
-solver.Init(values, weights, capacities)
-computed_value = solver.Solve()
+    print(highest)
+    print(hotels)
 
-packed_items = []
-packed_weights = []
-total_weight = 0
-print('Total value =', computed_value)
-for i in range(len(values)):
-    if solver.BestSolutionContains(i):
-        packed_items.append(i)
-        packed_weights.append(weights[0][i])
-        total_weight += weights[0][i]
-print('Total weight:', total_weight)
-print('Packed items:', packed_items)
-print('Packed_weights:', packed_weights)
-
-
+brute_force()
