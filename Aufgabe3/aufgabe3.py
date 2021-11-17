@@ -23,25 +23,8 @@ class WordDirection(Enum):
     diagonal = 3
 
 
-with open("worte4.txt", 'r', encoding='utf-8') as f:
+with open("worte0.txt", 'r', encoding='utf-8') as f:
     lines = f.readlines()
-
-dimensions = lines[0].split()
-height = int(dimensions[0])
-width = int(dimensions[1])
-
-uncleaned_words = lines[2:]
-words = []
-# Remove newline chars
-for word in uncleaned_words:
-    words.append(word.strip())
-
-
-possible_word_directions = [WordDirection.vertical,
-                            WordDirection.horizontal, WordDirection.diagonal]
-
-# Init grid
-grid = [[" "] * width for _ in range(height)]
 
 
 # Place Words
@@ -84,39 +67,69 @@ def is_word_possible(pos, word, grid, direction):
     return True
 
 
+def generate_alphabet(difficulty):
+    # create alphabet
+    if difficulty == Difficulty.hard:
+        # TODO: Remove dups and sprinkle in other letters to get to 26 chars
+        alphabet = "".join(words).upper()
+
+        while len(alphabet) < 26:
+            for i in range(0, 26-len(alphabet)):
+                alphabet += random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+                alphabet_set = set(alphabet)
+                alphabet = "".join(alphabet_set)
+    else:
+        alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    return alphabet
+
+
+dimensions = lines[0].split()
+height = int(dimensions[0])
+width = int(dimensions[1])
+
+difficulty = Difficulty.hard
+
+
+uncleaned_words = lines[2:]
+words = []
+# Remove newline chars
+for word in uncleaned_words:
+    words.append(word.strip())
+
+
+possible_word_directions = []
+
+if difficulty == Difficulty.easy:
+    possible_word_directions = [
+        WordDirection.vertical, WordDirection.horizontal]
+else:
+    possible_word_directions = [WordDirection.vertical,
+                                WordDirection.horizontal, WordDirection.diagonal]
+
+# Init grid
+grid = [[" "] * width for _ in range(height)]
+
+alphabet = generate_alphabet(difficulty)
+
+
+# grid = populate_grid(grid, alphabet, width, height, possible_word_directions)
+
 for word in words:
     x = random.randint(0, width - 1)
     y = random.randint(0, height - 1)
     direction = random.choice(possible_word_directions)
-    reversed = random.choice([True, False])
+    reversed = random.choice(
+        [True, False]) if difficulty == Difficulty.hard else False
     while not is_word_possible((x, y), word, grid, direction):
         x = random.randint(0, width - 1)
         y = random.randint(0, height - 1)
         direction = random.choice(possible_word_directions)
     grid = place_word((x, y), word, grid, direction, reversed)
 
-
-difficulty = Difficulty.hard
-alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-# create alphabet
-if difficulty == Difficulty.hard:
-    # TODO: Remove dups and sprinkle in other letters to get to 26 chars
-    alphabet = "".join(words).upper()
-
-    while len(alphabet) < 26:
-        for i in range(0, 26-len(alphabet)):
-            alphabet += random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-            alphabet_set = set(alphabet)
-            alphabet = "".join(alphabet_set)
-
-
-# print(render(place_word((1, 1), "test", grid)))
-#print(is_word_possible((1, 9), "test", grid, True))
 # Fill Grid with random chars
 for i in range(0, height):
     for k in range(0, width):
         if grid[i][k] == " ":
-            # TODO:  needs work for different difficulties
             grid[i][k] = alphabet[random.randint(0, 25)]
 
 
