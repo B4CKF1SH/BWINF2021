@@ -23,9 +23,20 @@ class WordDirection(Enum):
     diagonal = 3
 
 
-alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-height = 5
-width = 5
+with open("worte4.txt", 'r', encoding='utf-8') as f:
+    lines = f.readlines()
+
+dimensions = lines[0].split()
+height = int(dimensions[0])
+width = int(dimensions[1])
+
+uncleaned_words = lines[2:]
+words = []
+# Remove newline chars
+for word in uncleaned_words:
+    words.append(word.strip())
+
+
 possible_word_directions = [WordDirection.vertical,
                             WordDirection.horizontal, WordDirection.diagonal]
 
@@ -56,24 +67,23 @@ def is_word_possible(pos, word, grid, direction):
     space = len(word)
     for i in range(space):
         if direction == WordDirection.vertical:
-            if i + y >= width:
+            if i + y >= height:
                 return False
             if grid[y + i][x] != " ":
                 return False
         elif direction == WordDirection.horizontal:
-            if i + x >= height:
+            if i + x >= width:
                 return False
             if grid[y][x + i] != " ":
                 return False
         elif direction == WordDirection.diagonal:
-            if i + y >= width or i + x >= height:
+            if i + y >= height or i + x >= width:
                 return False
             if grid[y + i][x + i] != " ":
                 return False
     return True
 
 
-words = ["test", "dogs", "cats", "eva"]
 for word in words:
     x = random.randint(0, width - 1)
     y = random.randint(0, height - 1)
@@ -86,11 +96,25 @@ for word in words:
     grid = place_word((x, y), word, grid, direction, reversed)
 
 
+difficulty = Difficulty.hard
+alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+# create alphabet
+if difficulty == Difficulty.hard:
+    # TODO: Remove dups and sprinkle in other letters to get to 26 chars
+    alphabet = "".join(words).upper()
+
+    while len(alphabet) < 26:
+        for i in range(0, 26-len(alphabet)):
+            alphabet += random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+            alphabet_set = set(alphabet)
+            alphabet = "".join(alphabet_set)
+
+
 # print(render(place_word((1, 1), "test", grid)))
 #print(is_word_possible((1, 9), "test", grid, True))
 # Fill Grid with random chars
-for i in range(0, width):
-    for k in range(0, height):
+for i in range(0, height):
+    for k in range(0, width):
         if grid[i][k] == " ":
             # TODO:  needs work for different difficulties
             grid[i][k] = alphabet[random.randint(0, 25)]
