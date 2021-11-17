@@ -2,10 +2,6 @@ import random
 from enum import Enum
 
 
-def clamp(n, smallest, largest):
-    return max(smallest, min(n, largest))
-
-
 def reversed_string(a_string):
     return a_string[::-1]
 
@@ -28,8 +24,8 @@ class WordDirection(Enum):
 
 
 alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-height = 10
-width = 10
+height = 5
+width = 5
 possible_word_directions = [WordDirection.vertical,
                             WordDirection.horizontal, WordDirection.diagonal]
 
@@ -77,15 +73,16 @@ def is_word_possible(pos, word, grid, direction):
     return True
 
 
-words = ["test", "dogs", "cats"]
+words = ["test", "dogs", "cats", "eva"]
 for word in words:
-    x = random.randint(0, 9)
-    y = random.randint(0, 9)
+    x = random.randint(0, width - 1)
+    y = random.randint(0, height - 1)
     direction = random.choice(possible_word_directions)
     reversed = random.choice([True, False])
     while not is_word_possible((x, y), word, grid, direction):
-        x = random.randint(0, 9)
-        y = random.randint(0, 9)
+        x = random.randint(0, width - 1)
+        y = random.randint(0, height - 1)
+        direction = random.choice(possible_word_directions)
     grid = place_word((x, y), word, grid, direction, reversed)
 
 
@@ -95,8 +92,8 @@ for word in words:
 for i in range(0, width):
     for k in range(0, height):
         if grid[i][k] == " ":
-            grid[i][k] = alphabet[clamp(
-                int(random.randint(0, 25) * 1.1), 0, 25)]  # TODO:  needs work for different difficulties
+            # TODO:  needs work for different difficulties
+            grid[i][k] = alphabet[random.randint(0, 25)]
 
 
 render(grid)
