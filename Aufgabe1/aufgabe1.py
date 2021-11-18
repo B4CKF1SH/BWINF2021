@@ -8,7 +8,7 @@ hori = []
 hori_names = []
 
 # Einlesen der Daten
-with open("parkplatz0.txt", "r") as f:
+with open("parkplatz2.txt", "r") as f:
     lines = f.readlines()
 
     row_1 = lines[0].strip()
