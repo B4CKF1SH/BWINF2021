@@ -8,7 +8,7 @@ hori = []
 hori_names = []
 
 # Einlesen der Daten
-with open("parkplatz2.txt", "r") as f:
+with open("parkplatz0.txt", "r") as f:
     lines = f.readlines()
 
     row_1 = lines[0].strip()
@@ -36,7 +36,7 @@ with open("parkplatz2.txt", "r") as f:
 def free_right(place, ret):
     if hori[place] == 0:  # Falls der Platz leer ist, muss nicht mehr geschoben werden
         return ret
-    elif place >= len(hori) - 3:  # Auto kann nicht aus dem Parkplatz herausgeschoben werden
+    elif place >= len(hori) or place >= len(hori) - 4 + hori[place]:  # Auto kann nicht aus dem Parkplatz herausgeschoben werden
         return None
     elif hori[place] == 1:  # Das Auto muss 1 Parkplatz nach rechts verschoben werden
         x = [(hori_names[place], 1)]
@@ -54,7 +54,7 @@ def free_right(place, ret):
 def free_left(place, ret):
     if hori[place] == 0:  # Falls der Platz leer ist, muss nicht mehr geschoben werden
         return ret
-    elif place <= 2:  # Auto kann nicht aus dem Parkplatz herausgeschoben werden
+    elif place <= -1 or place <= 3 - hori[place]:  # Auto kann nicht aus dem Parkplatz herausgeschoben werden
         return None
     elif hori[place] == 1:  # Das Auto muss 2 Parkplätze nach links verschoben werden
         x = [(hori_names[place], 2)]
