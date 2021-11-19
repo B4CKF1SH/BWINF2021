@@ -118,9 +118,6 @@ def generate_alphabet(difficulty, words):
         while len(alphabet) < 26:
             for _ in range(0, 26-len(alphabet)):
                 alphabet += random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-                # Löschen von Duplikaten aus dem Array durch Konvertierung in ein Set
-                alphabet_set = set(alphabet)
-                alphabet = "".join(alphabet_set)
     else:
         alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     return alphabet
